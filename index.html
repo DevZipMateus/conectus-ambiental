@@ -40,6 +40,10 @@
 
   <!-- ===== LOADER ===== -->
   <div id="loader" aria-hidden="true">
+    <video class="loader-video" autoplay muted loop playsinline>
+      <source src="https://www.pexels.com/video/5770242/download/" type="video/mp4">
+    </video>
+    <div class="loader-overlay"></div>
     <div class="loader-inner">
       <img src="images/logo.png" alt="Conectus Soluções Ambientais" class="loader-logo">
       <div class="loader-barra-wrap">
@@ -419,11 +423,11 @@
     const loaderBarra = document.getElementById('loaderBarra');
     if (loader && loaderBarra) {
       requestAnimationFrame(() => { loaderBarra.style.width = '100%'; });
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          loader.classList.add('saindo');
-          setTimeout(() => loader.remove(), 800);
-        }, 400);
+      const tempoMinimo = new Promise(resolve => setTimeout(resolve, 4000));
+      const paginaCarregada = new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
+      Promise.all([tempoMinimo, paginaCarregada]).then(() => {
+        loader.classList.add('saindo');
+        setTimeout(() => loader.remove(), 800);
       });
     }
 
