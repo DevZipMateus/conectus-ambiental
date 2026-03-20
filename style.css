@@ -528,7 +528,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 100px 0;
   background:
     linear-gradient(rgba(28, 52, 97, 0.87), rgba(28, 52, 97, 0.87)),
-    url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80&auto=format&fit=crop')
+    url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=1920&q=80&auto=format&fit=crop')
     center / cover no-repeat;
   background-attachment: fixed, fixed;
 }
