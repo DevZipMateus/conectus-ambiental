@@ -905,6 +905,178 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   box-shadow: 0 6px 28px rgba(37, 211, 102, 0.58);
 }
 
+/* ===== LOADER ===== */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#loader.saindo { opacity: 0; visibility: hidden; }
+
+.loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.loader-logo {
+  height: 80px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  animation: loaderPulso 1.5s ease-in-out infinite;
+}
+@keyframes loaderPulso {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.65; transform: scale(0.94); }
+}
+.loader-barra-wrap {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.14);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.loader-barra {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  border-radius: 99px;
+  transition: width 2.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.loader-txt {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.loader-dots::after {
+  content: '';
+  animation: loaderDots 1.2s steps(4, end) infinite;
+}
+@keyframes loaderDots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+}
+
+/* ===== SCROLL PROGRESS ===== */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ===== HERO PARTÍCULAS ===== */
+.hero-particulas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-particulas span {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: rgba(45, 184, 75, 0.22);
+  animation: flutuar linear infinite;
+}
+.hero-particulas span:nth-child(1) { width: 8px;  height: 8px;  left: 8%;  animation-duration: 12s; animation-delay: 0s;   }
+.hero-particulas span:nth-child(2) { width: 14px; height: 14px; left: 20%; animation-duration: 17s; animation-delay: 3s;   }
+.hero-particulas span:nth-child(3) { width: 6px;  height: 6px;  left: 35%; animation-duration: 10s; animation-delay: 1.5s; }
+.hero-particulas span:nth-child(4) { width: 10px; height: 10px; left: 50%; animation-duration: 14s; animation-delay: 5s;   }
+.hero-particulas span:nth-child(5) { width: 16px; height: 16px; left: 63%; animation-duration: 19s; animation-delay: 2s;   }
+.hero-particulas span:nth-child(6) { width: 7px;  height: 7px;  left: 75%; animation-duration: 11s; animation-delay: 6s;   }
+.hero-particulas span:nth-child(7) { width: 12px; height: 12px; left: 85%; animation-duration: 15s; animation-delay: 4s;   }
+.hero-particulas span:nth-child(8) { width: 5px;  height: 5px;  left: 93%; animation-duration: 9s;  animation-delay: 7s;   }
+
+@keyframes flutuar {
+  0%   { transform: translateY(0) scale(0.5); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateY(-110vh) scale(1); opacity: 0; }
+}
+
+/* ===== ANIMAÇÕES DIRECIONAIS ===== */
+.slide-esq {
+  opacity: 0;
+  transform: translateX(-44px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.slide-dir {
+  opacity: 0;
+  transform: translateX(44px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.slide-esq.visivel,
+.slide-dir.visivel {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== STAGGER CARDS DE SERVIÇOS ===== */
+.servico-card { opacity: 0; transform: translateY(28px); }
+
+.servicos-grid.animado .servico-card {
+  animation: cardEntra 0.55s ease forwards;
+}
+@keyframes cardEntra {
+  to { opacity: 1; transform: none; }
+}
+.servicos-grid.animado .servico-card:nth-child(1)  { animation-delay: 0.00s; }
+.servicos-grid.animado .servico-card:nth-child(2)  { animation-delay: 0.07s; }
+.servicos-grid.animado .servico-card:nth-child(3)  { animation-delay: 0.14s; }
+.servicos-grid.animado .servico-card:nth-child(4)  { animation-delay: 0.21s; }
+.servicos-grid.animado .servico-card:nth-child(5)  { animation-delay: 0.28s; }
+.servicos-grid.animado .servico-card:nth-child(6)  { animation-delay: 0.35s; }
+.servicos-grid.animado .servico-card:nth-child(7)  { animation-delay: 0.42s; }
+.servicos-grid.animado .servico-card:nth-child(8)  { animation-delay: 0.49s; }
+.servicos-grid.animado .servico-card:nth-child(9)  { animation-delay: 0.56s; }
+.servicos-grid.animado .servico-card:nth-child(10) { animation-delay: 0.63s; }
+.servicos-grid.animado .servico-card:nth-child(11) { animation-delay: 0.70s; }
+.servicos-grid.animado .servico-card:nth-child(12) { animation-delay: 0.77s; }
+
+/* ===== UNDERLINE ANIMADO NOS TÍTULOS ===== */
+.cabecalho-secao h2::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  width: 0;
+  border-radius: 2px;
+  margin: 12px auto 0;
+  transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
+}
+.cabecalho-secao.ativo h2::after { width: 60%; }
+
+/* ===== GLOW NOS ÍCONES DOS SERVIÇOS ===== */
+.servico-icone {
+  transition: transform var(--transicao), color var(--transicao), filter var(--transicao);
+}
+.servico-card:hover .servico-icone {
+  filter: drop-shadow(0 0 10px rgba(77, 217, 100, 0.65));
+}
+
+/* ===== PULSO DE BORDA NO CARD VALORES ===== */
+.mvv-card.destaque {
+  animation: pulsarBorda 3.5s ease-in-out infinite;
+}
+@keyframes pulsarBorda {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45, 184, 75, 0); }
+  50%       { box-shadow: 0 0 0 5px rgba(45, 184, 75, 0.3); }
+}
+.mvv-card.destaque:hover { animation: none; }
+
 /* ===== RESPONSIVIDADE ===== */
 
 /* ≥ 1800px — 4K / ultrawide */
@@ -972,6 +1144,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .hero-botoes .btn-contorno { justify-content: center; }
 
   .contato-cta-box { padding: 36px 28px; }
+}
+
+/* ≤ 768px — ocultar partículas em mobile */
+@media (max-width: 768px) {
+  .hero-particulas { display: none; }
 }
 
 /* ≤ 600px — mobile */

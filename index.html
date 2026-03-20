@@ -38,6 +38,20 @@
 </head>
 <body>
 
+  <!-- ===== LOADER ===== -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-inner">
+      <img src="images/logo.png" alt="Conectus Soluções Ambientais" class="loader-logo">
+      <div class="loader-barra-wrap">
+        <div class="loader-barra" id="loaderBarra"></div>
+      </div>
+      <p class="loader-txt">Carregando<span class="loader-dots"></span></p>
+    </div>
+  </div>
+
+  <!-- ===== BARRA DE PROGRESSO DE SCROLL ===== -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
   <!-- ===== HEADER ===== -->
   <header id="header">
     <div class="header-container">
@@ -76,6 +90,10 @@
   <!-- ===== HERO ===== -->
   <section id="inicio" class="hero">
     <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-particulas" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
     <div class="hero-conteudo">
       <div class="hero-badge">
         <i class="fas fa-leaf" aria-hidden="true"></i>
@@ -96,17 +114,17 @@
       </div>
       <div class="hero-stats">
         <div class="hero-stat">
-          <strong>+20</strong>
+          <strong data-target="20" data-prefix="+">+20</strong>
           <span>Tipos de serviços ambientais</span>
         </div>
         <div class="hero-stat-div" aria-hidden="true"></div>
         <div class="hero-stat">
-          <strong>100%</strong>
+          <strong data-target="100" data-suffix="%">100%</strong>
           <span>Soluções personalizadas</span>
         </div>
         <div class="hero-stat-div" aria-hidden="true"></div>
         <div class="hero-stat">
-          <strong>2</strong>
+          <strong data-target="2">2</strong>
           <span>Engenheiras especializadas</span>
         </div>
       </div>
@@ -119,7 +137,7 @@
       <div class="sobre-grid">
 
         <!-- Historia -->
-        <div class="sobre-historia fade-in">
+        <div class="sobre-historia slide-esq">
           <span class="etiqueta">Nossa história</span>
           <h2>Duas engenheiras, uma missão: cuidar do meio ambiente</h2>
           <p>A Conectus Soluções Ambientais surgiu do desejo mútuo de duas engenheiras — <strong>Angélica e Jaqueline</strong> —, formadas na mesma turma do curso de Engenharia Ambiental e Sanitária.</p>
@@ -131,7 +149,7 @@
         </div>
 
         <!-- MVV -->
-        <div class="sobre-mvv">
+        <div class="sobre-mvv slide-dir">
           <div class="mvv-card fade-in">
             <div class="mvv-icone"><i class="fas fa-eye" aria-hidden="true"></i></div>
             <h3>Visão</h3>
@@ -396,10 +414,33 @@
   <script src="https://vaabpicspdbolvutnscp.supabase.co/functions/v1/get-footer-iframe"></script>
 
   <script>
-    // ===== HEADER SCROLL =====
+    // ===== LOADER =====
+    const loader = document.getElementById('loader');
+    const loaderBarra = document.getElementById('loaderBarra');
+    if (loader && loaderBarra) {
+      requestAnimationFrame(() => { loaderBarra.style.width = '100%'; });
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          loader.classList.add('saindo');
+          setTimeout(() => loader.remove(), 800);
+        }, 400);
+      });
+    }
+
+    // ===== HEADER + SCROLL PROGRESS + ACTIVE NAV =====
     const header = document.getElementById('header');
+    const progressBar = document.getElementById('scroll-progress');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.desktop-nav a');
+
     window.addEventListener('scroll', () => {
-      header.classList.toggle('rolado', window.scrollY > 60);
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (progressBar) progressBar.style.width = (scrolled / total * 100) + '%';
+      header.classList.toggle('rolado', scrolled > 60);
+      let current = '';
+      sections.forEach(s => { if (scrolled >= s.offsetTop - 120) current = s.getAttribute('id'); });
+      navLinks.forEach(a => a.classList.toggle('ativo', a.getAttribute('href') === '#' + current));
     }, { passive: true });
 
     // ===== MENU MOBILE =====
@@ -420,22 +461,52 @@
       });
     });
 
-    // ===== FADE-IN ON SCROLL =====
+    // ===== OBSERVER GERAL (fade-in, slide-esq, slide-dir) =====
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visivel'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-in, .slide-esq, .slide-dir').forEach(el => observer.observe(el));
 
-    // ===== ACTIVE NAV =====
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.desktop-nav a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id'); });
-      navLinks.forEach(a => a.classList.toggle('ativo', a.getAttribute('href') === '#' + current));
-    }, { passive: true });
+    // ===== STAGGER CARDS DE SERVIÇOS =====
+    const servicosGrid = document.querySelector('.servicos-grid');
+    if (servicosGrid) {
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          servicosGrid.classList.add('animado');
+          entry.target._obs && entry.target._obs.disconnect();
+        }
+      }, { threshold: 0.08 }).observe(servicosGrid);
+    }
+
+    // ===== UNDERLINE ANIMADO NOS TÍTULOS =====
+    document.querySelectorAll('.cabecalho-secao').forEach(el => {
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { el.classList.add('ativo'); }
+      }, { threshold: 0.4 }).observe(el);
+    });
+
+    // ===== COUNTER ANIMATION =====
+    function countUp(el) {
+      const target = +el.dataset.target;
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const step = 16;
+      const increment = target / (duration / step);
+      let current = 0;
+      const timer = setInterval(() => {
+        current = Math.min(current + increment, target);
+        el.textContent = prefix + Math.floor(current) + suffix;
+        if (current >= target) clearInterval(timer);
+      }, step);
+    }
+    document.querySelectorAll('[data-target]').forEach(el => {
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { countUp(el); }
+      }, { threshold: 0.5 }).observe(el);
+    });
 
     // ===== RIPPLE =====
     document.querySelectorAll('.btn-primario, .btn-contorno, .btn-wpp-cta').forEach(btn => {
