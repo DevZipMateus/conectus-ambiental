@@ -913,23 +913,9 @@
 
       const slides = track.querySelectorAll('.carrossel-slide');
       const imgs = Array.from(slides).map(s => s.querySelector('img'));
-      const outer = track.parentElement; // .carrossel-track-outer
       const total = slides.length;
       let current = 0;
       let autoplayTimer;
-
-      // Ajusta a altura do container à imagem atual (sem corte/azul sobrando)
-      function ajustarAltura(img) {
-        if (img.complete && img.naturalHeight) {
-          const ratio = img.naturalHeight / img.naturalWidth;
-          outer.style.height = (outer.offsetWidth * ratio) + 'px';
-        } else {
-          img.addEventListener('load', () => {
-            const ratio = img.naturalHeight / img.naturalWidth;
-            outer.style.height = (outer.offsetWidth * ratio) + 'px';
-          }, { once: true });
-        }
-      }
 
       // Criar dots
       slides.forEach((_, i) => {
@@ -946,15 +932,8 @@
         dotsContainer.querySelectorAll('.carrossel-dot').forEach((d, i) =>
           d.classList.toggle('active', i === current)
         );
-        ajustarAltura(imgs[current]);
         resetAutoplay();
       }
-
-      // Ajusta ao redimensionar a janela
-      window.addEventListener('resize', () => ajustarAltura(imgs[current]), { passive: true });
-
-      // Inicializa altura com a primeira imagem
-      ajustarAltura(imgs[0]);
 
       function resetAutoplay() {
         clearInterval(autoplayTimer);
