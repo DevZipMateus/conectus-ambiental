@@ -1731,6 +1731,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex: 1;
   overflow: hidden;
   border-radius: 16px;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carrossel-track {
@@ -1742,19 +1743,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .carrossel-slide {
   min-width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  background: #0d1a2b;
-  border-radius: 16px;
-  overflow: hidden;
-  max-height: 600px;
 }
 
 .carrossel-slide img {
   width: 100%;
   height: auto;
-  max-height: 600px;
-  object-fit: contain;
   display: block;
   border-radius: 16px;
   cursor: zoom-in;
