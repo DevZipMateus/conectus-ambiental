@@ -695,6 +695,19 @@
     <i class="fas fa-chevron-up" aria-hidden="true"></i>
   </button>
 
+  <!-- ===== LIGHTBOX GALERIA ===== -->
+  <div id="lightboxOverlay" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Visualizar imagem">
+    <button class="lightbox-fechar" id="lightboxFechar" aria-label="Fechar">&#x2715;</button>
+    <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Imagem anterior">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img src="" alt="Imagem ampliada" class="lightbox-img" id="lightboxImg">
+    <button class="lightbox-nav next" id="lightboxNext" aria-label="Próxima imagem">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="lightbox-contador" id="lightboxContador"></div>
+  </div>
+
   <!-- ===== COOKIE CONSENT (LGPD) ===== -->
   <div id="cookieConsent" class="cookie-consent" role="dialog" aria-label="Aviso de cookies" aria-live="polite">
     <div class="cookie-texto">
@@ -899,6 +912,7 @@
       if (!track) return;
 
       const slides = track.querySelectorAll('.carrossel-slide');
+      const imgs = Array.from(slides).map(s => s.querySelector('img'));
       const total = slides.length;
       let current = 0;
       let autoplayTimer;
@@ -938,6 +952,62 @@
       });
 
       resetAutoplay();
+
+      // ===== LIGHTBOX =====
+      const overlay = document.getElementById('lightboxOverlay');
+      const lbImg = document.getElementById('lightboxImg');
+      const lbContador = document.getElementById('lightboxContador');
+      const lbFechar = document.getElementById('lightboxFechar');
+      const lbPrev = document.getElementById('lightboxPrev');
+      const lbNext = document.getElementById('lightboxNext');
+      let lbIndex = 0;
+
+      function abrirLightbox(index) {
+        lbIndex = (index + total) % total;
+        lbImg.src = imgs[lbIndex].src;
+        lbImg.alt = imgs[lbIndex].alt;
+        lbContador.textContent = (lbIndex + 1) + ' / ' + total;
+        overlay.classList.add('ativo');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function fecharLightbox() {
+        overlay.classList.remove('ativo');
+        document.body.style.overflow = '';
+      }
+
+      function lbGoTo(index) {
+        lbIndex = (index + total) % total;
+        lbImg.style.opacity = '0';
+        setTimeout(() => {
+          lbImg.src = imgs[lbIndex].src;
+          lbImg.alt = imgs[lbIndex].alt;
+          lbContador.textContent = (lbIndex + 1) + ' / ' + total;
+          lbImg.style.opacity = '1';
+        }, 200);
+      }
+
+      imgs.forEach((img, i) => img.addEventListener('click', () => abrirLightbox(i)));
+
+      lbFechar.addEventListener('click', fecharLightbox);
+      overlay.addEventListener('click', e => { if (e.target === overlay) fecharLightbox(); });
+      lbPrev.addEventListener('click', () => lbGoTo(lbIndex - 1));
+      lbNext.addEventListener('click', () => lbGoTo(lbIndex + 1));
+
+      document.addEventListener('keydown', e => {
+        if (!overlay.classList.contains('ativo')) return;
+        if (e.key === 'Escape') fecharLightbox();
+        if (e.key === 'ArrowRight') lbGoTo(lbIndex + 1);
+        if (e.key === 'ArrowLeft') lbGoTo(lbIndex - 1);
+      });
+
+      // Swipe no lightbox
+      let lbTouchX = 0;
+      overlay.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+      overlay.addEventListener('touchend', e => {
+        const diff = lbTouchX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) lbGoTo(diff > 0 ? lbIndex + 1 : lbIndex - 1);
+      });
     })();
 
     // ===== SITE PRONTO =====
