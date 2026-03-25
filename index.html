@@ -106,6 +106,7 @@
         <a href="#inicio">Início</a>
         <a href="#sobre">Sobre</a>
         <a href="#servicos">Serviços</a>
+        <a href="#galeria">Galeria</a>
         <a href="#depoimentos">Depoimentos</a>
         <a href="#faq">FAQ</a>
         <a href="#contato">Contato</a>
@@ -126,6 +127,7 @@
     <a href="#inicio" class="nav-link">Início</a>
     <a href="#sobre" class="nav-link">Sobre</a>
     <a href="#servicos" class="nav-link">Serviços</a>
+    <a href="#galeria" class="nav-link">Galeria</a>
     <a href="#depoimentos" class="nav-link">Depoimentos</a>
     <a href="#faq" class="nav-link">FAQ</a>
     <a href="#contato" class="nav-link">Contato</a>
@@ -314,6 +316,41 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- ===== GALERIA / CARROSSEL ===== -->
+  <section id="galeria" class="galeria-section">
+    <div class="container">
+      <div class="cabecalho-secao fade-in">
+        <span class="badge-secao">Galeria</span>
+        <h2>Nosso Trabalho em Campo</h2>
+        <p>Conheça um pouco do trabalho realizado pela nossa equipe em campo</p>
+      </div>
+      <div class="carrossel-wrapper">
+        <button class="carrossel-btn carrossel-btn-prev" id="galeriaAnterior" aria-label="Imagem anterior">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="carrossel-track-outer">
+          <div class="carrossel-track" id="galeriaTrack">
+            <div class="carrossel-slide"><img src="images/galeria/galeria-01.jpg" alt="Trabalho em campo 1" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-02.jpg" alt="Trabalho em campo 2" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-03.jpg" alt="Trabalho em campo 3" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-04.jpg" alt="Trabalho em campo 4" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-05.jpg" alt="Trabalho em campo 5" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-06.jpg" alt="Trabalho em campo 6" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-07.jpg" alt="Trabalho em campo 7" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-08.jpg" alt="Trabalho em campo 8" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-09.jpg" alt="Trabalho em campo 9" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-10.jpg" alt="Trabalho em campo 10" loading="lazy"></div>
+            <div class="carrossel-slide"><img src="images/galeria/galeria-11.jpg" alt="Trabalho em campo 11" loading="lazy"></div>
+          </div>
+        </div>
+        <button class="carrossel-btn carrossel-btn-next" id="galeriaProximo" aria-label="Próxima imagem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="carrossel-dots" id="galeriaDots"></div>
     </div>
   </section>
 
@@ -626,6 +663,7 @@
             <a href="#inicio">Início</a>
             <a href="#sobre">Sobre</a>
             <a href="#servicos">Serviços</a>
+            <a href="#galeria">Galeria</a>
             <a href="#depoimentos">Depoimentos</a>
             <a href="#faq">FAQ</a>
             <a href="#contato">Contato</a>
@@ -851,6 +889,56 @@
         setTimeout(() => r.remove(), 700);
       });
     });
+
+    // ===== CARROSSEL GALERIA =====
+    (function() {
+      const track = document.getElementById('galeriaTrack');
+      const dotsContainer = document.getElementById('galeriaDots');
+      const btnPrev = document.getElementById('galeriaAnterior');
+      const btnNext = document.getElementById('galeriaProximo');
+      if (!track) return;
+
+      const slides = track.querySelectorAll('.carrossel-slide');
+      const total = slides.length;
+      let current = 0;
+      let autoplayTimer;
+
+      // Criar dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carrossel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Ir para imagem ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      });
+
+      function goTo(index) {
+        current = (index + total) % total;
+        track.style.transform = 'translateX(-' + current * 100 + '%)';
+        dotsContainer.querySelectorAll('.carrossel-dot').forEach((d, i) =>
+          d.classList.toggle('active', i === current)
+        );
+        resetAutoplay();
+      }
+
+      function resetAutoplay() {
+        clearInterval(autoplayTimer);
+        autoplayTimer = setInterval(() => goTo(current + 1), 5000);
+      }
+
+      btnNext.addEventListener('click', () => goTo(current + 1));
+      btnPrev.addEventListener('click', () => goTo(current - 1));
+
+      // Swipe touch
+      let touchStartX = 0;
+      track.parentElement.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      track.parentElement.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+      });
+
+      resetAutoplay();
+    })();
 
     // ===== SITE PRONTO =====
     window.addEventListener('load', () => document.body.classList.add('site-pronto'));
