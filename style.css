@@ -197,9 +197,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .logo-img {
-  height: 48px;
+  height: 56px;
   width: auto;
-  filter: brightness(0) invert(1);
   transition: opacity var(--transicao);
 }
 .logo:hover .logo-img { opacity: 0.85; }
@@ -327,7 +326,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background:
     linear-gradient(135deg, rgba(28, 52, 97, 0.75) 0%, rgba(28, 52, 97, 0.55) 100%),
     url('images/bg-hero.jpg')
-    center / cover no-repeat;
+    center 22% / cover no-repeat;
   background-attachment: scroll, scroll;
 }
 
@@ -369,7 +368,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-logo {
   height: 80px;
   width: auto;
-  filter: brightness(0) invert(1);
   margin-bottom: 28px;
 }
 
@@ -1347,6 +1345,53 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .depo-info span {
   font-size: 0.8rem;
   color: var(--cinza);
+}
+
+/* ===== CLIENTES ===== */
+.clientes {
+  padding: 100px 0;
+  background: var(--branco);
+}
+
+.clientes-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.cliente-logo {
+  background: var(--branco);
+  border: 1px solid rgba(28, 52, 97, 0.08);
+  border-radius: var(--radius-md);
+  padding: 22px 18px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
+}
+.cliente-logo:hover {
+  transform: translateY(-4px);
+  border-color: rgba(45, 184, 75, 0.35);
+  box-shadow: var(--sombra);
+}
+.cliente-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 1100px) {
+  .clientes-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 720px) {
+  .clientes { padding: 70px 0; }
+  .clientes-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cliente-logo { height: 90px; padding: 14px 12px; }
+}
+@media (max-width: 420px) {
+  .clientes-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ===== PARCEIROS / ÓRGÃOS ===== */
